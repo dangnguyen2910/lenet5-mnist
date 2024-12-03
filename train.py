@@ -13,6 +13,7 @@ def train_one_epoch(train_dataloader, val_dataloader,
 
     for i, (img, label) in enumerate(train_dataloader):
         img = img.to(device)
+        label = label.to(device)
         
         optimizer.zero_grad()
         output = model(img)
@@ -34,13 +35,14 @@ def train(train_dataloader, val_dataloader,
 
     for epoch in range(epochs):
         print('-' * 60)
-        print(f"Epoch: [{epoch}/{epochs}]")
+        print(f"Epoch: [{epoch+1}/{epochs}]")
         
         train_loss = train_one_epoch(train_dataloader, val_dataloader, model, loss_fn, optimizer, device)
 
         running_vloss = 0
         for i, (img, label) in enumerate(val_dataloader):
             img = img.to(device)
+            label = label.to(device)
 
             optimizer.zero_grad()
             output = model(img)
