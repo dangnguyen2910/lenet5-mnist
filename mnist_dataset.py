@@ -12,7 +12,7 @@ class Mnist:
         label = self.label_list[idx]
 
         img = torch.Tensor(img).unsqueeze(0)
-        label = torch.Tensor(label)
+        label = torch.Tensor([label]).squeeze().long()
         return img, label
 
     def __len__(self):
@@ -22,4 +22,4 @@ class Mnist:
 if __name__ == "__main__":
     (train_imgs, train_labels), (_,_) = load()
     train = Mnist(train_imgs, train_labels)
-    print(type(train[0][1]))
+    print(train[0][1].size())
