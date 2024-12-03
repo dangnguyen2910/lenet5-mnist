@@ -13,15 +13,18 @@ def get_resnet(model='resnet18'):
             model = torchvision.models.resnet50()
         case 'resnet101':
             model = torchvision.models.resnet101()
-        
+    
+    in_features = model.fc.in_features
+    model.fc = torch.nn.Sequential(
+        nn.Linear(in_features, 10),
+    )
+
+    model.conv1 = nn.Conv2d(1, 64, kernel_size=(7,7), stride=(2,2), padding=(3,3), bias=False)
+
     return model
 
 
 if __name__ == "__main__":
     model = get_resnet()
-    in_features = model.fc.in_features
-    model.fc = torch.nn.Sequential(
-        nn.Linear(in_features, 10),
-        nn.Softmax(dim=1)
-    )
+    
     print(model)
