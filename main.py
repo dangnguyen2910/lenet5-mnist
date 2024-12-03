@@ -1,6 +1,6 @@
 from get_mnist import load
 from mnist_dataset import Mnist
-from model import LeNet5
+from lenet5 import LeNet5
 from train import train
 
 import torch
@@ -42,8 +42,8 @@ def main() -> None:
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
-    trained_model = train(train_dataloader, val_dataloader, 
-                          model, loss_fn, optimizer, epochs, device)
+    train(train_dataloader, val_dataloader, 
+            model, loss_fn, optimizer, epochs, device)
     
 
     

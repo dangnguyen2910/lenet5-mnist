@@ -1,9 +1,8 @@
 import torch
 import torch.nn as nn
-import model
 from mnist_dataset import Mnist
 from get_mnist import load
-
+import os 
 
 
 
@@ -32,7 +31,11 @@ def train_one_epoch(train_dataloader, val_dataloader,
 
 def train(train_dataloader, val_dataloader, 
           model, loss_fn, optimizer, epochs, device):
-
+    
+    if (not os.path.exists('models/')):
+        os.makedirs('models')
+    
+    best_vloss = 100
     for epoch in range(epochs):
         print('-' * 60)
         print(f"Epoch: [{epoch+1}/{epochs}]")
@@ -52,10 +55,13 @@ def train(train_dataloader, val_dataloader,
 
             running_vloss += loss.item()
 
+        if (running_vloss/len(val_dataloader) < best_vloss):
+            torch.save(model.state_dict(), "models/lenet.pth")
+
         print(f"   Train loss: {train_loss:.2f}")
         print(f"   Val loss: {running_vloss/len(val_dataloader):.2f}")
 
-    return model
+    return
 
 
 
