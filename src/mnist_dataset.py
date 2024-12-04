@@ -1,6 +1,6 @@
 import torch
 from torch.utils.data import Dataset
-from get_mnist import load
+from .get_mnist import load
 
 class Mnist: 
     def __init__(self, image_list, label_list): 

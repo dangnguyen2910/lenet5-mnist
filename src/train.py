@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
-from mnist_dataset import Mnist
-from get_mnist import load
+from .mnist_dataset import Mnist
+from .get_mnist import load
 import os 
 
 
