@@ -7,6 +7,8 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, random_split
 import logging
+import matplotlib.pyplot as plt
+import numpy as np 
 
 
 
@@ -42,8 +44,14 @@ def main() -> None:
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
-    train(train_dataloader, val_dataloader, 
+    train_loss, val_loss = train(train_dataloader, val_dataloader, 
             model, loss_fn, optimizer, epochs, device)
+
+    fig = plt.figure(figsize=(14,5))
+    plt.plot(np.arange(epochs), train_loss, label='train')
+    plt.plot(np.arange(epochs), val_loss, label='val')
+    plt.legend()
+    plt.savefig("figures/train_val_loss")
     
 
     

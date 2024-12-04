@@ -31,7 +31,9 @@ def train_one_epoch(train_dataloader, val_dataloader,
 
 def train(train_dataloader, val_dataloader, 
           model, loss_fn, optimizer, epochs, device):
-    
+    train_losses = []
+    val_losses = []
+
     if (not os.path.exists('models/')):
         os.makedirs('models')
     
@@ -43,7 +45,7 @@ def train(train_dataloader, val_dataloader,
         train_loss = train_one_epoch(train_dataloader, val_dataloader, model, loss_fn, optimizer, device)
 
         running_vloss = 0
-        for i, (img, label) in enumerate(val_dataloader):
+        for _, (img, label) in enumerate(val_dataloader):
             img = img.to(device)
             label = label.to(device)
 
@@ -55,13 +57,17 @@ def train(train_dataloader, val_dataloader,
 
             running_vloss += loss.item()
 
-        if (running_vloss/len(val_dataloader) < best_vloss):
+        val_loss = running_vloss/len(val_dataloader)
+        if (val_loss < best_vloss):
             torch.save(model.state_dict(), "models/lenet.pth")
 
         print(f"   Train loss: {train_loss:.2f}")
-        print(f"   Val loss: {running_vloss/len(val_dataloader):.2f}")
+        print(f"   Val loss: {val_loss:.2f}")
 
-    return
+        train_losses.append(train_loss)
+        val_losses.append(val_loss)
+
+    return train_losses, val_losses
 
 
 
