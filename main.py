@@ -11,9 +11,7 @@ import matplotlib.pyplot as plt
 import numpy as np 
 
 
-
-def main() -> None: 
-    logging.basicConfig(
+logging.basicConfig(
         filename="logs/main.log",
         encoding="utf-8", 
         filemode="a", 
@@ -21,13 +19,16 @@ def main() -> None:
         style="{", 
         datefmt="%d/%m/%Y %H:%M", 
         level=logging.DEBUG
-    )
+)
+logging.getLogger('matplotlib.font_manager').disabled = True
 
+
+def main() -> None: 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     logging.info(f"Using {device}")
 
     batch_size = 1
-    epochs = 2
+    epochs = 1
 
     (train_images, train_labels), (test_images, test_labels) = load()  
     train_dataset = Mnist(train_images, train_labels)
@@ -38,7 +39,6 @@ def main() -> None:
 
     train_dataloader = DataLoader(train_dataset, batch_size, shuffle=True)
     val_dataloader = DataLoader(val_dataset, batch_size, shuffle=True)
-    test_dataloader = DataLoader(test_dataset, batch_size, shuffle=True)
 
     model = LeNet5().to(device)
     loss_fn = nn.CrossEntropyLoss()
