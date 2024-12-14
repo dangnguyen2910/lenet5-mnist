@@ -2,6 +2,7 @@ from src.get_mnist import load
 from src.mnist_dataset import Mnist
 from src.lenet5 import LeNet5
 from src.train import train
+from src.predict import * 
 
 import torch
 import torch.nn as nn
@@ -39,22 +40,38 @@ def main() -> None:
 
     train_dataloader = DataLoader(train_dataset, batch_size, shuffle=True)
     val_dataloader = DataLoader(val_dataset, batch_size, shuffle=True)
+    test_dataloader = DataLoader(test_dataset, batch_size, shuffle=True)
 
     model = LeNet5().to(device)
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
-    
-    train_loss, val_loss = train(train_dataloader, val_dataloader, 
-            model, loss_fn, optimizer, epochs, device)
+    user_input = input('Do you want to train (y/n)?')
 
-    fig = plt.figure(figsize=(14,5))
-    plt.plot(np.arange(epochs), train_loss, label='train')
-    plt.plot(np.arange(epochs), val_loss, label='val')
-    plt.legend()
-    plt.savefig("figures/train_val_loss")
-    
+    if user_input == 'y':
+        train_loss, val_loss = train(train_dataloader, val_dataloader, model, loss_fn, optimizer, epochs, device)
+        
+        fig = plt.figure(figsize=(14,5))
+        plt.plot(np.arange(epochs), train_loss, label='train')
+        plt.plot(np.arange(epochs), val_loss, label='val')
+        plt.legend()
+        plt.savefig("figures/train_val_loss")
 
+    else: 
+        model.load_state_dict(torch.load('models/lenet.pth', weights_only=True))
+
+    precision = evaluate(model, test_dataloader, device)
+    print(f"Precision: {precision}")
+
+    fig = plt.figure()
+    for i in range(1,5): 
+        fig.add_subplot(1,4,i)
+        test_img, test_label = test_dataset[i]
+
+        plt.imshow(test_img.permute(1,2,0), 'gray')
+        output = predict(model, test_img, device)
+        plt.title(f"Output: {output}")
+    plt.show()
     
 
 if __name__ == "__main__":
